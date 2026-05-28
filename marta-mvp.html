@@ -4867,11 +4867,9 @@ function buildFinancialForecast() {
                       CURRENT_REGION === 'Europa'  ? ['Europa'] :
                       [CURRENT_REGION];
 
-  // BRL→USD conversion (FORECAST_CSV stores values in BRL)
-  const _brl2usd = (typeof FX_RATES !== 'undefined' && FX_RATES.BRL) ? FX_RATES.BRL : (1 / 4.97);
-
-  // Helper: get a component value from FORECAST_CSV using actual→realistic fallback (returns BRL or null)
-  function _getCsvBrl(region, component, idx) {
+  // Helper: get a component value from FORECAST_CSV using actual→realistic fallback
+  // FORECAST_CSV values are already in display-compatible units (same as fmtForecast expects)
+  function _getCsvVal(region, component, idx) {
     if (typeof FORECAST_CSV === 'undefined' || !FORECAST_CSV || !FORECAST_CSV[region]) return null;
     const r = FORECAST_CSV[region];
     // 1. Try actual data first
@@ -4897,21 +4895,21 @@ function buildFinancialForecast() {
     const isInCsvYear = m >= '2026-01' && m <= '2026-12';
 
     let mrr = 0, variable = 0, activation = 0, wa = 0, services = 0;
-    let gross_brl = 0, net_brl = 0;
+    let grossCsv = 0, netCsv = 0;
     let isReal = false;
 
     if (isInCsvYear && typeof FORECAST_CSV !== 'undefined' && FORECAST_CSV) {
-      // === PRIMARY: use FORECAST_CSV (actual → realistic fallback) ===
+      // === PRIMARY: use FORECAST_CSV (actual → realistic fallback) — no currency conversion needed ===
       _finRegions.forEach(reg => {
-        mrr        += (_getCsvBrl(reg, 'minimum',       monthIdx) || 0) * _brl2usd;
-        variable   += (_getCsvBrl(reg, 'variable',      monthIdx) || 0) * _brl2usd;
-        activation += (_getCsvBrl(reg, 'activation',    monthIdx) || 0) * _brl2usd;
-        wa         += (_getCsvBrl(reg, 'wa_sessions',   monthIdx) || 0) * _brl2usd;
-        services   += (_getCsvBrl(reg, 'services',      monthIdx) || 0) * _brl2usd;
-        gross_brl  += (_getCsvBrl(reg, 'gross_revenue', monthIdx) || 0);
-        net_brl    += (_getCsvBrl(reg, 'net_revenue',   monthIdx) || 0);
+        mrr        += (_getCsvVal(reg, 'minimum',       monthIdx) || 0);
+        variable   += (_getCsvVal(reg, 'variable',      monthIdx) || 0);
+        activation += (_getCsvVal(reg, 'activation',    monthIdx) || 0);
+        wa         += (_getCsvVal(reg, 'wa_sessions',   monthIdx) || 0);
+        services   += (_getCsvVal(reg, 'services',      monthIdx) || 0);
+        grossCsv   += (_getCsvVal(reg, 'gross_revenue', monthIdx) || 0);
+        netCsv     += (_getCsvVal(reg, 'net_revenue',   monthIdx) || 0);
       });
-      // isReal = all regions have actual (finalized) data, not Preview
+      // isReal = all regions have finalized actual data (not Preview)
       isReal = _finRegions.every(reg => _isActualMonth(reg, monthIdx));
     } else {
       // === FALLBACK: months outside FORECAST_CSV range → use OFFICIAL_PNL if available ===
@@ -4931,16 +4929,15 @@ function buildFinancialForecast() {
         });
         isReal = m <= LAST_ACTUAL_MONTH;
       }
-      const tmpGross = mrr + activation + variable + wa + services;
-      gross_brl = tmpGross / _brl2usd; // back-convert to populate brl vars (not used in this branch)
-      net_brl   = (tmpGross - wa * breakdown.gogs_wa) / _brl2usd;
+      grossCsv = mrr + activation + variable + wa + services;
+      netCsv   = grossCsv - wa * breakdown.gogs_wa;
     }
 
     const corePlat = mrr + variable + activation;
-    // Use FORECAST_CSV gross/net directly (most accurate); derive GOGS from the difference
-    const gross  = isInCsvYear ? gross_brl * _brl2usd : (mrr + variable + activation + wa + services);
-    const net    = isInCsvYear ? net_brl   * _brl2usd : (gross - wa * breakdown.gogs_wa);
-    const gogsAmt  = Math.max(0, gross - net);
+    // Use FORECAST_CSV gross/net directly for accuracy; derive GOGS as the difference
+    const gross   = isInCsvYear ? grossCsv : (mrr + variable + activation + wa + services);
+    const net     = isInCsvYear ? netCsv   : (gross - wa * breakdown.gogs_wa);
+    const gogsAmt = Math.max(0, gross - net);
     const gogsRate = wa > 0 ? gogsAmt / wa : breakdown.gogs_wa;
 
     return { month: m, isReal, mrr, activation, variable, corePlat, wa, services, gross, gogsAmt, gogsRate, net };
