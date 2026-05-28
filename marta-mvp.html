@@ -1767,7 +1767,17 @@ function parseForecastCSV(text) {
     const n = parseFloat(t);
     return isNaN(n) ? null : n;
   }
-  
+
+  // The Forecast Excel stores monetary values in THOUSANDS notation
+  // (e.g., 541.821 = 541,821 BRL) to keep the spreadsheet readable.
+  // Exception: some cells are already full-scale (typically stored as strings
+  // with comma separators, e.g. "1,150,249" → parsed as 1150249).
+  // Threshold: values ≥ 10,000 are already full-scale; values < 10,000 need ×1000.
+  function scaleNum(n) {
+    if (n === null) return null;
+    return Math.abs(n) >= 10000 ? n : n * 1000;
+  }
+
   // Find region boundaries
   const regionStarts = [];
   rows.forEach((r, i) => {
@@ -1862,9 +1872,9 @@ function parseForecastCSV(text) {
       
       if (!compKey) continue;
       
-      // Extract values per scenario
+      // Extract values per scenario — apply scaleNum to normalize thousands notation to full units
       Object.keys(SCENARIOS).forEach(sc => {
-        const monthArr = SCENARIOS[sc].map(c => parseNum(row[c]));
+        const monthArr = SCENARIOS[sc].map(c => scaleNum(parseNum(row[c])));
         if (!out[sc][compKey]) out[sc][compKey] = monthArr;
       });
     }
@@ -4036,19 +4046,37 @@ function buildExecutiveForecast() {
   const regionData = regions.map(r => {
     const budgetMonthly = getBudgetForRegion(r.key) || [];
     let actual = 0, forecast = 0, budget = 0;
-    
+    const sc = FORECAST_SCENARIO || 'realistic';
+
     periodInfo.months.forEach(m => {
       const idx = parseInt(m.substring(5,7), 10) - 1;
       budget += budgetMonthly[idx] || 0;
-      if (m <= LAST_ACTUAL_MONTH) {
-        const a = getActualForMonth(r.key, m);
-        if (a !== null) actual += a;
-      } else {
-        const f = getForecastForMonth(r.key, m);
-        if (f !== null) forecast += f;
+      let val = null, isActual = false;
+      // FORECAST_CSV as single source of truth when loaded for this region
+      if (typeof FORECAST_CSV !== 'undefined' && FORECAST_CSV && FORECAST_CSV[r.key]) {
+        const actualArr = (FORECAST_CSV[r.key].actual || {}).net_revenue;
+        if (actualArr && actualArr[idx] !== null && actualArr[idx] !== undefined && actualArr[idx] > 0) {
+          val = actualArr[idx]; isActual = true;
+        } else {
+          const scArr = ((FORECAST_CSV[r.key][sc] || FORECAST_CSV[r.key].realistic) || {}).net_revenue;
+          if (scArr && scArr[idx] !== null && scArr[idx] !== undefined && scArr[idx] > 0) {
+            val = scArr[idx]; isActual = false;
+          }
+        }
       }
+      // Fallback for regions without FORECAST_CSV (e.g. BR)
+      if (val === null) {
+        if (m <= LAST_ACTUAL_MONTH) {
+          const a = getActualForMonth(r.key, m);
+          if (a !== null) { val = a; isActual = true; }
+        } else {
+          const f = getForecastForMonth(r.key, m, sc);
+          if (f !== null) { val = f; isActual = false; }
+        }
+      }
+      if (val !== null) { if (isActual) actual += val; else forecast += val; }
     });
-    
+
     const achieved = actual + forecast;
     return { ...r, actual, forecast, budget, achieved };
   });
@@ -6128,7 +6156,7 @@ function buildWeeklyBrief() {
   let q2Actual = 0, q2Forecast = 0, q2Budget = 0;
   const LAST_ACTUAL_MONTH = (typeof OFFICIAL_PNL_LAST_MONTH !== 'undefined') ? OFFICIAL_PNL_LAST_MONTH : '2026-04';
   if (periodInfo) {
-    ['LATAM','Europa','BR'].forEach(r => {
+    ['LATAM','Europa'].forEach(r => {
       const bd = (typeof getBudgetForRegion === 'function') ? (getBudgetForRegion(r) || []) : [];
       periodInfo.months.forEach(m => {
         const idx = parseInt(m.substring(5,7),10) - 1;
@@ -6356,21 +6384,43 @@ function buildExecutiveSummary() {
   const ytdInfo = (typeof getPeriodMonths === 'function') ? getPeriodMonths('YTD', 'YTD') : null;
   
   // Compute realistic vs optimistic Q2 totals
+  // Rule: for each month, FORECAST_CSV is the single source of truth when loaded.
+  //   - CSV actual[month] non-null  → finalized actual
+  //   - CSV actual[month] null       → Preview or future: use scenario value
+  // If no FORECAST_CSV for the region → fall back to OFFICIAL_PNL / computeRevenueBreakdown.
   function computeQ2(scenario) {
     let actual = 0, forecast = 0, budget = 0;
     if (!periodInfo) return { actual: 0, forecast: 0, budget: 0, total: 0 };
-    ['LATAM','Europa','BR'].forEach(r => {
+    ['LATAM','Europa'].forEach(r => {
       const bd = (typeof getBudgetForRegion === 'function') ? (getBudgetForRegion(r) || []) : [];
       periodInfo.months.forEach(m => {
         const idx = parseInt(m.substring(5,7),10) - 1;
         budget += bd[idx] || 0;
-        if (m <= LAST_ACTUAL_MONTH) {
-          const a = (typeof getActualForMonth === 'function') ? getActualForMonth(r, m) : null;
-          if (a !== null) actual += a;
-        } else {
-          const f = (typeof getForecastForMonth === 'function') ? getForecastForMonth(r, m, scenario) : null;
-          if (f !== null) forecast += f;
+        let val = null, isActual = false;
+        if (typeof FORECAST_CSV !== 'undefined' && FORECAST_CSV && FORECAST_CSV[r]) {
+          // Try finalized actual from CSV
+          const actualArr = (FORECAST_CSV[r].actual || {}).net_revenue;
+          if (actualArr && actualArr[idx] !== null && actualArr[idx] !== undefined && actualArr[idx] > 0) {
+            val = actualArr[idx]; isActual = true;
+          } else {
+            // Preview or future month — use scenario
+            const scArr = ((FORECAST_CSV[r][scenario] || FORECAST_CSV[r].realistic) || {}).net_revenue;
+            if (scArr && scArr[idx] !== null && scArr[idx] !== undefined && scArr[idx] > 0) {
+              val = scArr[idx]; isActual = false;
+            }
+          }
         }
+        // Fallback: no FORECAST_CSV for this region
+        if (val === null) {
+          if (m <= LAST_ACTUAL_MONTH) {
+            const a = (typeof getActualForMonth === 'function') ? getActualForMonth(r, m) : null;
+            if (a !== null) { val = a; isActual = true; }
+          } else {
+            const f = (typeof getForecastForMonth === 'function') ? getForecastForMonth(r, m, scenario) : null;
+            if (f !== null) { val = f; isActual = false; }
+          }
+        }
+        if (val !== null) { if (isActual) actual += val; else forecast += val; }
       });
     });
     return { actual, forecast, budget, total: actual + forecast };
@@ -6384,7 +6434,7 @@ function buildExecutiveSummary() {
   // YTD actual (just numbers up to last_actual)
   let ytdActual = 0;
   if (ytdInfo) {
-    ['LATAM','Europa','BR'].forEach(r => {
+    ['LATAM','Europa'].forEach(r => {
       ytdInfo.months.forEach(m => {
         const a = (typeof getActualForMonth === 'function') ? getActualForMonth(r, m) : null;
         if (a !== null) ytdActual += a;
@@ -6409,23 +6459,36 @@ function buildExecutiveSummary() {
   // Regional spread for the realistic scenario
   let bestR = null, worstR = null;
   let bestRatio = 0, worstRatio = 99;
-  ['LATAM','Europa','BR'].forEach(r => {
+  ['LATAM','Europa'].forEach(r => {
     if (!periodInfo) return;
-    let a = 0, f = 0, b = 0;
+    let regTotal = 0, b = 0;
     const bd = (typeof getBudgetForRegion === 'function') ? (getBudgetForRegion(r) || []) : [];
     periodInfo.months.forEach(m => {
       const idx = parseInt(m.substring(5,7),10) - 1;
       b += bd[idx] || 0;
-      if (m <= LAST_ACTUAL_MONTH) {
-        const av = (typeof getActualForMonth === 'function') ? getActualForMonth(r, m) : null;
-        if (av !== null) a += av;
-      } else {
-        const fv = (typeof getForecastForMonth === 'function') ? getForecastForMonth(r, m, 'realistic') : null;
-        if (fv !== null) f += fv;
+      let val = null;
+      if (typeof FORECAST_CSV !== 'undefined' && FORECAST_CSV && FORECAST_CSV[r]) {
+        const actualArr = (FORECAST_CSV[r].actual || {}).net_revenue;
+        if (actualArr && actualArr[idx] !== null && actualArr[idx] !== undefined && actualArr[idx] > 0) {
+          val = actualArr[idx];
+        } else {
+          const scArr = (FORECAST_CSV[r].realistic || {}).net_revenue;
+          if (scArr && scArr[idx] !== null && scArr[idx] !== undefined && scArr[idx] > 0) val = scArr[idx];
+        }
       }
+      if (val === null) {
+        if (m <= LAST_ACTUAL_MONTH) {
+          const av = (typeof getActualForMonth === 'function') ? getActualForMonth(r, m) : null;
+          if (av !== null) val = av;
+        } else {
+          const fv = (typeof getForecastForMonth === 'function') ? getForecastForMonth(r, m, 'realistic') : null;
+          if (fv !== null) val = fv;
+        }
+      }
+      if (val !== null) regTotal += val;
     });
     if (b > 0) {
-      const ratio = (a + f) / b;
+      const ratio = regTotal / b;
       if (ratio > bestRatio) { bestRatio = ratio; bestR = r; }
       if (ratio < worstRatio) { worstRatio = ratio; worstR = r; }
     }
