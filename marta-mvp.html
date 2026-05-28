@@ -1499,6 +1499,36 @@ function refreshUI() {
   if (typeof buildCustomerHealthView === 'function') buildCustomerHealthView();
   if (typeof buildExecutiveSummary === 'function') buildExecutiveSummary();
   if (typeof buildWeeklyBrief === 'function') buildWeeklyBrief();
+
+  // Update dynamic strings that depend on loaded data
+  const totalDealsStr = fmtN(s.total_deals);
+  const totalMRRStr   = fmt(s.total_mrr);
+  const countriesCount = (DATA && DATA.countries) ? DATA.countries.length : 0;
+
+  // ctx-pill in chat view
+  const ctxPillEl = document.querySelector('.ctx-pill');
+  if (ctxPillEl) ctxPillEl.innerHTML = '📊 <span>' + totalDealsStr + ' deals</span> · ' + totalMRRStr;
+
+  // Update i18n strings for all languages
+  if (typeof T !== 'undefined') {
+    const subPT = totalDealsStr + ' deals abertos · Dados reais';
+    const subES = totalDealsStr + ' deals abiertos · Datos reales';
+    const subEN = totalDealsStr + ' open deals · Real data';
+    const chatSubPT = 'Claude Sonnet · contexto real de ' + totalDealsStr + ' deals';
+    const chatSubES = 'Claude Sonnet · contexto real de ' + totalDealsStr + ' deals';
+    const chatSubEN = 'Claude Sonnet · real context of ' + totalDealsStr + ' deals';
+    const bodyPT = 'Tenho <strong>' + totalDealsStr + ' deals</strong> no contexto — ' + totalMRRStr + ' em pipeline MRR real, com ' + countriesCount + ' países identificados.';
+    const bodyES = 'Tengo <strong>' + totalDealsStr + ' deals</strong> en contexto — ' + totalMRRStr + ' en pipeline MRR real, con ' + countriesCount + ' países identificados.';
+    const bodyEN = 'I have <strong>' + totalDealsStr + ' deals</strong> in context — ' + totalMRRStr + ' in real pipeline MRR across ' + countriesCount + ' countries.';
+    if (T.pt) { T.pt.tb_overview_sub = subPT; T.pt.tb_chat_sub = chatSubPT; T.pt.welcome_body = bodyPT; T.pt.kpi_total_sub = totalDealsStr + ' oportunidades'; }
+    if (T.es) { T.es.tb_overview_sub = subES; T.es.tb_chat_sub = chatSubES; T.es.welcome_body = bodyES; T.es.kpi_total_sub = totalDealsStr + ' oportunidades'; }
+    if (T.en) { T.en.tb_overview_sub = subEN; T.en.tb_chat_sub = chatSubEN; T.en.welcome_body = bodyEN; T.en.kpi_total_sub = totalDealsStr + ' open opportunities'; }
+    // Re-apply to already-rendered elements
+    document.querySelectorAll('[data-i18n="welcome_body"]').forEach(el => {
+      const val = T[lang] ? T[lang].welcome_body : bodyPT;
+      el.innerHTML = val;
+    });
+  }
 }
 
 // Toggles dos controles
