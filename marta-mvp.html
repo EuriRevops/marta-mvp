@@ -1868,7 +1868,7 @@ function openLocalCSVDialog() {
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">' +
         '<div>' +
           '<div style="font-family:var(--fd);font-weight:700;font-size:18px;color:var(--tx);margin-bottom:4px">📁 Carregar banco de dados</div>' +
-          '<div style="font-size:12px;color:var(--mu);line-height:1.5">Selecione o arquivo XLSX com as 4 abas: Pipeline, Revenue, Invoice, Forecast.</div>' +
+          '<div style="font-size:12px;color:var(--mu);line-height:1.5">Selecione o arquivo XLSX com as 4 abas: Deals, Revenue, Invoice, Forecast.</div>' +
         '</div>' +
         '<button onclick="document.getElementById(\'local-csv-modal\').remove()" style="background:transparent;border:none;color:var(--mu);font-size:22px;cursor:pointer;padding:0;line-height:1">×</button>' +
       '</div>' +
@@ -1879,7 +1879,7 @@ function openLocalCSVDialog() {
       '</div>' +
       
       '<div style="margin-top:18px;padding:12px 14px;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.18);border-radius:7px;font-size:10.5px;color:var(--mu);font-family:var(--fm);line-height:1.55">' +
-        '💡 As 4 abas esperadas: <strong style="color:var(--tx)">Pipeline</strong> · <strong style="color:var(--tx)">Revenue</strong> · <strong style="color:var(--tx)">Invoice</strong> · <strong style="color:var(--tx)">Forecast</strong>. Capitalização não importa.' +
+        '💡 As 4 abas esperadas: <strong style="color:var(--tx)">Deals</strong> · <strong style="color:var(--tx)">Revenue</strong> · <strong style="color:var(--tx)">Invoice</strong> · <strong style="color:var(--tx)">Forecast</strong>. Capitalização não importa.' +
       '</div>' +
     '</div>';
   document.body.appendChild(modal);
@@ -2011,12 +2011,12 @@ function parseDatabaseXLSX(workbook) {
     return workbook.Sheets[real];
   };
   
-  const pipelineSheet = getSheet('pipeline');
+  const pipelineSheet = getSheet('deals');
   const revenueSheet  = getSheet('revenue');
   const invoiceSheet  = getSheet('invoice');
   const forecastSheet = getSheet('forecast');
-  
-  if (!pipelineSheet) throw new Error('Aba "Pipeline" não encontrada no XLSX');
+
+  if (!pipelineSheet) throw new Error('Aba "Deals" não encontrada no XLSX');
   
   // Pipeline rows — with date cells parsed as Date objects (raw: false)
   const pipelineRows = XLSX.utils.sheet_to_json(pipelineSheet, { raw: true, defval: '' })
