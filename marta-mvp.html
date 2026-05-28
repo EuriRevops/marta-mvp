@@ -2600,7 +2600,7 @@ const T = {
     fc_official_pnl:'Fonte oficial:',fc_official_pnl_body:'baseline calibrado com Revenue Assurance (KPI Previa, ',fc_excluded:'). Ajustes financeiros excluídos.',
     fc_br_op:'Operação Brasil:',fc_br_op_body:'dados de Blip Chat (entity oficial). Pipeline pode incluir deals de outros países negociados pelo time BR.',
     fc_gross_6m:'Gross 6m',fc_net_6m:'Net 6m',fc_gogs_wa:'GOGS WA',fc_margin:'margem',
-    fc_composition:'Composição do Gross (6m projetado)',fc_mrr:'MRR',fc_activation:'Activation & Bonus',fc_variable:'Variable (add-ons)',fc_wa_sessions:'WA Sessions',fc_services:'Services',
+    fc_composition:'Composição do Gross (6m projetado)',fc_mrr:'MRR',fc_activation:'Activation & Bonus',fc_variable:'Variable',fc_wa_sessions:'WA Sessions',fc_services:'Services',
     fc_mrr_tip:'Mensalidade base recorrente.',fc_act_tip:'Fees one-time na assinatura.',fc_var_tip:'Número Adicional, Extensões, AI Agent, Blip Copilot, Blip Calls.',fc_wa_tip:'WhatsApp Sessions. Sujeito a GOGS.',fc_svc_tip:'Implementação, customização, consultoria.',
     fc_step_1:'Recorrentes (MRR, Activation, Variable, WA, Services) calibrados pelo Revenue Assurance + sazonalidade',
     fc_step_2:'Pipeline contribui Activation no mês de fechamento (sem lag) e MRR no mês seguinte (lag 1m)',
@@ -2668,7 +2668,7 @@ const T = {
     fc_official_pnl:'Fuente oficial:',fc_official_pnl_body:'baseline calibrado con Revenue Assurance (KPI Previa, ',fc_excluded:'). Ajustes financieros excluidos.',
     fc_br_op:'Operación Brasil:',fc_br_op_body:'datos de Blip Chat (entity oficial). Pipeline puede incluir deals de otros países negociados por el equipo BR.',
     fc_gross_6m:'Gross 6m',fc_net_6m:'Net 6m',fc_gogs_wa:'GOGS WA',fc_margin:'margen',
-    fc_composition:'Composición del Gross (6m proyectado)',fc_mrr:'MRR',fc_activation:'Activation & Bonus',fc_variable:'Variable (add-ons)',fc_wa_sessions:'WA Sessions',fc_services:'Services',
+    fc_composition:'Composición del Gross (6m proyectado)',fc_mrr:'MRR',fc_activation:'Activation & Bonus',fc_variable:'Variable',fc_wa_sessions:'WA Sessions',fc_services:'Services',
     fc_mrr_tip:'Mensualidad base recurrente.',fc_act_tip:'Fees one-time en la firma.',fc_var_tip:'Número Adicional, Extensiones, AI Agent, Blip Copilot, Blip Calls.',fc_wa_tip:'WhatsApp Sessions. Sujeto a GOGS.',fc_svc_tip:'Implementación, customización, consultoría.',
     fc_step_1:'Recurrentes (MRR, Activation, Variable, WA, Services) calibrados por Revenue Assurance + estacionalidad',
     fc_step_2:'Pipeline contribuye Activation en el mes de cierre (sin lag) y MRR en el mes siguiente (lag 1m)',
@@ -2736,7 +2736,7 @@ const T = {
     fc_official_pnl:'Official source:',fc_official_pnl_body:'baseline calibrated with Revenue Assurance (KPI Previa, ',fc_excluded:'). Financial adjustments excluded.',
     fc_br_op:'Brazil operation:',fc_br_op_body:'data from Blip Chat (official entity). Pipeline may include deals from other countries negotiated by the BR team.',
     fc_gross_6m:'Gross 6m',fc_net_6m:'Net 6m',fc_gogs_wa:'GOGS WA',fc_margin:'margin',
-    fc_composition:'Gross composition (6m projected)',fc_mrr:'MRR',fc_activation:'Activation & Bonus',fc_variable:'Variable (add-ons)',fc_wa_sessions:'WA Sessions',fc_services:'Services',
+    fc_composition:'Gross composition (6m projected)',fc_mrr:'MRR',fc_activation:'Activation & Bonus',fc_variable:'Variable',fc_wa_sessions:'WA Sessions',fc_services:'Services',
     fc_mrr_tip:'Base recurring monthly.',fc_act_tip:'One-time signing fees.',fc_var_tip:'Extra Number, Extensions, AI Agent, Blip Copilot, Blip Calls.',fc_wa_tip:'WhatsApp Sessions. Subject to GOGS.',fc_svc_tip:'Implementation, customization, consulting.',
     fc_step_1:'Recurring components (MRR, Activation, Variable, WA, Services) calibrated by Revenue Assurance + seasonality',
     fc_step_2:'Pipeline contributes Activation in close month (no lag) and MRR the following month (1m lag)',
@@ -4860,97 +4860,90 @@ function buildFinancialForecast() {
   const allMonths = [...histMonths, ...futureMonths.slice(0, 6)];
   
   const LAST_ACTUAL_MONTH = (typeof OFFICIAL_PNL_LAST_MONTH !== 'undefined') ? OFFICIAL_PNL_LAST_MONTH : '2026-04';
-  
-  // === Compute monthly breakdown for the 12 months ===
-  // For PAST months: use OFFICIAL_PNL gross + estimate components from Platform/WA/Services split
-  // For FUTURE months: use baseline × seasonality + pipeline contribution
-  
-  // To split Platform into MRR/Activation/Variable, use ratios from revenue CSV (when available)
-  let mrrRatio = 0.80, actRatio = 0.10, varRatio = 0.10;
-  const revData = revenueForRegion();
-  if (revData && revData.length > 0) {
-    const buckets = { mrr: 0, activation: 0, variable: 0 };
-    let totalCore = 0;
-    revData.forEach(r => {
-      const cur = r.currency_final || 'USD';
-      const fxRates = { USD:1, EUR:1.08, BRL:1/4.97, MXN:1/19.5 };
-      const usd = (parseFloat(r.revenue) || 0) * (fxRates[cur] || 1);
-      const bucket = classifyRevenueBucket(r.trigger, r.revenue_breakdown);
-      if (bucket === 'mrr' || bucket === 'activation' || bucket === 'variable') {
-        buckets[bucket] += usd;
-        totalCore += usd;
-      }
-    });
-    if (totalCore > 1000) {
-      mrrRatio = buckets.mrr / totalCore;
-      actRatio = buckets.activation / totalCore;
-      varRatio = buckets.variable / totalCore;
+
+  // === Regions to aggregate over ===
+  const _finRegions = CURRENT_REGION === 'all'    ? ['LATAM', 'Europa'] :
+                      CURRENT_REGION === 'LATAM'   ? ['LATAM'] :
+                      CURRENT_REGION === 'Europa'  ? ['Europa'] :
+                      [CURRENT_REGION];
+
+  // BRL→USD conversion (FORECAST_CSV stores values in BRL)
+  const _brl2usd = (typeof FX_RATES !== 'undefined' && FX_RATES.BRL) ? FX_RATES.BRL : (1 / 4.97);
+
+  // Helper: get a component value from FORECAST_CSV using actual→realistic fallback (returns BRL or null)
+  function _getCsvBrl(region, component, idx) {
+    if (typeof FORECAST_CSV === 'undefined' || !FORECAST_CSV || !FORECAST_CSV[region]) return null;
+    const r = FORECAST_CSV[region];
+    // 1. Try actual data first
+    const actualArr = (r.actual || {})[component];
+    if (actualArr && actualArr[idx] !== null && actualArr[idx] !== undefined && actualArr[idx] > 0) {
+      return actualArr[idx];
     }
+    // 2. Fall back to realistic scenario (same logic as attainment)
+    const scArr = ((r.realistic || {})[component]) || [];
+    const v = scArr[idx];
+    return (v !== null && v !== undefined && v > 0) ? v : null;
   }
-  
-  // Track last-month new MRR for lag-1m logic
-  let prevMRRClose = 0;
-  
+
+  // Helper: does this region+month have finalized actual data in FORECAST_CSV?
+  function _isActualMonth(region, idx) {
+    if (typeof FORECAST_CSV === 'undefined' || !FORECAST_CSV || !FORECAST_CSV[region]) return false;
+    const actualArr = (FORECAST_CSV[region].actual || {}).net_revenue;
+    return !!(actualArr && actualArr[idx] !== null && actualArr[idx] !== undefined && actualArr[idx] > 0);
+  }
+
   const monthData = allMonths.map(m => {
-    const isPast = m <= LAST_ACTUAL_MONTH;
-    const moOfYear = m.substring(5,7);
-    const sFactor = seasonality[moOfYear] || 1;
-    
-    let mrr, activation, variable, wa, services, gross, gogsRate, isReal;
-    
-    if (isPast && typeof OFFICIAL_PNL !== 'undefined' && CURRENT_REGION !== 'all' && OFFICIAL_PNL[CURRENT_REGION] && OFFICIAL_PNL[CURRENT_REGION][m]) {
-      // Use REAL P&L data
-      const r = OFFICIAL_PNL[CURRENT_REGION][m];
-      const platform = r.platform || 0;
-      const releases = r.recent_releases || 0;
-      
-      mrr = platform * mrrRatio;
-      activation = platform * actRatio;
-      variable = platform * varRatio + releases;
-      wa = r.wa || 0;
-      services = r.services || 0;
-      gross = mrr + activation + variable + wa + services;
-      // Use plan GOGS for now; in real P&L this varies — could be derived from Net field if available
-      gogsRate = breakdown.gogs_wa;
-      isReal = true;
-    } else if (isPast && CURRENT_REGION === 'all') {
-      // Sum across regions
-      mrr = activation = variable = wa = services = 0;
-      ['LATAM','Europa','BR'].forEach(reg => {
-        if (typeof OFFICIAL_PNL !== 'undefined' && OFFICIAL_PNL[reg] && OFFICIAL_PNL[reg][m]) {
-          const r = OFFICIAL_PNL[reg][m];
-          const platform = r.platform || 0;
-          const releases = r.recent_releases || 0;
-          mrr += platform * mrrRatio;
-          activation += platform * actRatio;
-          variable += platform * varRatio + releases;
-          wa += r.wa || 0;
-          services += r.services || 0;
-        }
+    const monthIdx = parseInt(m.substring(5, 7), 10) - 1; // 0=Jan … 11=Dec
+    const isInCsvYear = m >= '2026-01' && m <= '2026-12';
+
+    let mrr = 0, variable = 0, activation = 0, wa = 0, services = 0;
+    let gross_brl = 0, net_brl = 0;
+    let isReal = false;
+
+    if (isInCsvYear && typeof FORECAST_CSV !== 'undefined' && FORECAST_CSV) {
+      // === PRIMARY: use FORECAST_CSV (actual → realistic fallback) ===
+      _finRegions.forEach(reg => {
+        mrr        += (_getCsvBrl(reg, 'minimum',       monthIdx) || 0) * _brl2usd;
+        variable   += (_getCsvBrl(reg, 'variable',      monthIdx) || 0) * _brl2usd;
+        activation += (_getCsvBrl(reg, 'activation',    monthIdx) || 0) * _brl2usd;
+        wa         += (_getCsvBrl(reg, 'wa_sessions',   monthIdx) || 0) * _brl2usd;
+        services   += (_getCsvBrl(reg, 'services',      monthIdx) || 0) * _brl2usd;
+        gross_brl  += (_getCsvBrl(reg, 'gross_revenue', monthIdx) || 0);
+        net_brl    += (_getCsvBrl(reg, 'net_revenue',   monthIdx) || 0);
       });
-      gross = mrr + activation + variable + wa + services;
-      gogsRate = breakdown.gogs_wa;
-      isReal = true;
+      // isReal = all regions have actual (finalized) data, not Preview
+      isReal = _finRegions.every(reg => _isActualMonth(reg, monthIdx));
     } else {
-      // FORECAST
-      mrr = breakdown.mrr_baseline * sFactor + prevMRRClose;
-      const newDealsThisMonth = (pipelineMap[m] || {mrr_usd:0}).mrr_usd;
-      activation = breakdown.activation_baseline * sFactor + newDealsThisMonth * 0.30;
-      variable = breakdown.variable_baseline * sFactor;
-      wa = breakdown.wa_baseline * sFactor;
-      services = breakdown.services_baseline * sFactor;
-      gross = mrr + activation + variable + wa + services;
-      gogsRate = breakdown.gogs_wa;
-      isReal = false;
-      
-      prevMRRClose = newDealsThisMonth;
+      // === FALLBACK: months outside FORECAST_CSV range → use OFFICIAL_PNL if available ===
+      if (typeof OFFICIAL_PNL !== 'undefined') {
+        const regs = CURRENT_REGION === 'all' ? ['LATAM', 'Europa'] : [CURRENT_REGION];
+        regs.forEach(reg => {
+          const r = OFFICIAL_PNL[reg] && OFFICIAL_PNL[reg][m];
+          if (r) {
+            const platform = r.platform || 0;
+            // Estimated split (80/10/10 ratios — only used for pre-2026 history)
+            mrr        += platform * 0.80;
+            activation += platform * 0.10;
+            variable   += platform * 0.10 + (r.recent_releases || 0);
+            wa         += r.wa || 0;
+            services   += r.services || 0;
+          }
+        });
+        isReal = m <= LAST_ACTUAL_MONTH;
+      }
+      const tmpGross = mrr + activation + variable + wa + services;
+      gross_brl = tmpGross / _brl2usd; // back-convert to populate brl vars (not used in this branch)
+      net_brl   = (tmpGross - wa * breakdown.gogs_wa) / _brl2usd;
     }
-    
-    const corePlat = mrr + activation + variable;
-    const gogsAmt = wa * gogsRate;
-    const net = gross - gogsAmt;
-    
-    return { month: m, isReal, mrr, activation, variable, corePlat, wa, services, gross, gogsAmt, gogsRate, net, sFactor };
+
+    const corePlat = mrr + variable + activation;
+    // Use FORECAST_CSV gross/net directly (most accurate); derive GOGS from the difference
+    const gross  = isInCsvYear ? gross_brl * _brl2usd : (mrr + variable + activation + wa + services);
+    const net    = isInCsvYear ? net_brl   * _brl2usd : (gross - wa * breakdown.gogs_wa);
+    const gogsAmt  = Math.max(0, gross - net);
+    const gogsRate = wa > 0 ? gogsAmt / wa : breakdown.gogs_wa;
+
+    return { month: m, isReal, mrr, activation, variable, corePlat, wa, services, gross, gogsAmt, gogsRate, net };
   });
   
   // === LEFT PANE: Region notice + key totals ===
@@ -5043,7 +5036,7 @@ function buildFinancialForecast() {
     trendHTML += '<div style="margin-bottom:9px">' +
       '<div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11px;margin-bottom:3px">' +
         '<span style="display:flex;align-items:center;gap:6px;font-family:var(--fm)">' +
-          '<span style="color:' + (d.isReal ? '#fff' : 'var(--ac)') + '">' + monthLabel(d.month) + '</span>' +
+          '<span style="color:' + (d.isReal ? 'var(--gr)' : 'var(--ac)') + '">' + monthLabel(d.month) + '</span>' +
           '<span style="font-size:9px;background:' + tagBg + ';color:' + tagColor + ';padding:1px 5px;border-radius:3px">' + tagLabel + '</span>' +
         '</span>' +
         '<span style="font-family:var(--fm);font-size:10.5px">' +
@@ -5091,7 +5084,7 @@ function buildFinancialForecast() {
     const tagColor = d.isReal ? 'var(--gr)' : 'var(--ac)';
     const tagBg = d.isReal ? 'rgba(16,185,129,.1)' : 'rgba(0,212,255,.1)';
     gridHTML += '<th style="text-align:right;padding:9px 10px;font-size:10px;font-weight:500;border-bottom:1px solid var(--b);min-width:80px">' +
-      '<div style="color:' + (d.isReal ? '#fff' : 'var(--ac)') + ';margin-bottom:2px">' + monthLabel(d.month) + '</div>' +
+      '<div style="color:' + (d.isReal ? 'var(--gr)' : 'var(--ac)') + ';margin-bottom:2px">' + monthLabel(d.month) + '</div>' +
       '<div style="font-size:8.5px;font-weight:500;color:' + tagColor + ';background:' + tagBg + ';padding:1px 5px;border-radius:3px;display:inline-block;letter-spacing:0">' + (d.isReal ? t('fc_real_short') : t('fc_forecast_label')) + '</div>' +
     '</th>';
   });
@@ -5113,7 +5106,7 @@ function buildFinancialForecast() {
     visibleMonths.forEach(d => {
       const v = getter(d);
       const isNeg = v < 0;
-      const valColor = opts.gross ? 'var(--ac)' : opts.net ? 'var(--gr)' : opts.deduction ? '#fca5a5' : opts.subtotal ? '#fff' : opts.indent ? 'var(--mu)' : 'var(--tx)';
+      const valColor = opts.gross ? 'var(--ac)' : opts.net ? 'var(--gr)' : opts.deduction ? '#fca5a5' : opts.subtotal ? 'var(--tx)' : opts.indent ? 'var(--mu)' : 'var(--tx)';
       row += '<td style="padding:8px 10px;text-align:right;font-size:11px;color:' + valColor + ';font-variant-numeric:tabular-nums;' + (opts.bold || opts.gross || opts.net || opts.subtotal ? 'font-weight:600' : '') + '">' + (isNeg ? '−' : '') + fmtForecast(Math.abs(v)) + '</td>';
     });
     row += '</tr>';
@@ -5121,7 +5114,7 @@ function buildFinancialForecast() {
   };
   
   // The actual grid rows
-  gridHTML += renderRow(t('fc_mrr') + ' (Mensalidade)', d => d.mrr, { indent: true });
+  gridHTML += renderRow(t('fc_mrr'), d => d.mrr, { indent: true });
   gridHTML += renderRow(t('fc_activation'), d => d.activation, { indent: true });
   gridHTML += renderRow(t('fc_variable'), d => d.variable, { indent: true });
   gridHTML += renderRow(t('fc_core_platform'), d => d.corePlat, { subtotal: true });
