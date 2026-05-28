@@ -2419,15 +2419,15 @@ async function _loadFromCSVLegacy_unused() {
 
 
 // ═══════════════════════════════════════════
-// DATA
+// DATA — zerado; preenchido por rebuildDataFromDeals() quando o database é carregado
 // ═══════════════════════════════════════════
 const DATA = {
-  summary:{total_deals:1490,total_mrr:63511855,land_mrr:53160069,expand_mrr:10351786,hot_mrr:20824925,warm_mrr:12198378,cold_mrr:30488551},
-  funnel:[{name:'SQL',deals:86,mrr:157448,hot:0,warm:0,cold:157448,land:157448,exp:0},{name:'Discovery',deals:498,mrr:15584026,hot:2304889,warm:1542124,cold:11737012,land:10938076,exp:4645949},{name:'Demo',deals:44,mrr:1552091,hot:485881,warm:226347,cold:839864,land:514350,exp:1037741},{name:'Solution Design',deals:105,mrr:2158523,hot:528209,warm:46030,cold:1584284,land:1495025,exp:663498},{name:'Proposal',deals:299,mrr:16502449,hot:4972967,warm:6526001,cold:5003481,land:16502449,exp:0},{name:'Negotiation',deals:262,mrr:16723269,hot:8776510,warm:3186930,cold:4759829,land:16723269,exp:0},{name:'Commit',deals:196,mrr:10834049,hot:3756469,warm:670947,cold:6406633,land:6829452,exp:4004597}],
-  countries:[{code:'BR',deals:1394,mrr:52278487,hot:19533191,warm:11665517,cold:21079778},{code:'MX',deals:53,mrr:9753030,hot:1108246,warm:310477,cold:8334307},{code:'ES',deals:7,mrr:499792,hot:70000,warm:204000,cold:225792},{code:'CL',deals:21,mrr:480329,hot:60215,warm:18384,cold:401730},{code:'CO',deals:5,mrr:192356,hot:0,warm:0,cold:192356},{code:'EC',deals:2,mrr:129933,hot:0,warm:0,cold:129933},{code:'DO',deals:1,mrr:53273,hot:53273,warm:0,cold:0},{code:'CR',deals:1,mrr:48363,hot:0,warm:0,cold:48363},{code:'PE',deals:1,mrr:45380,hot:0,warm:0,cold:45380},{code:'AR',deals:4,mrr:27385,hot:0,warm:0,cold:27385},{code:'UY',deals:1,mrr:3526,hot:0,warm:0,cold:3526}],
-  top40:[['Kueski - Promociones - Sessions (Complementario)','MAcc','Whales','Discovery',72900,'Warm','2026-06','Lianet Oliveros','EXPAND','MX','17640321093','55827646481'],['Kueski - Promociones - Sessions','MAcc','Whales','Negotiation',49650,'Hot','2026-05','Lianet Oliveros','EXPAND','MX','17640321093','51761173552'],['Chubb - Bot agentes','MAcc','Whales','Solution Design',49472,'Hot','2026-05','Ximena López Muñoz','EXPAND','CH','23399054935','58630736766'],['Kueski - Pacta - Sessions','MAcc','Whales','Solution Design',46125,'Warm','2026-07','Lianet Oliveros','EXPAND','MX','17640321093','40735787619'],['Viva Aerobus - Nuevo Variable','MAcc','Big Strugglers','Discovery',30000,'Cold','2026-02','Sari Villavicencio','EXPAND','MX','23398743449','51244932171'],['Ford_Chihuahua_ALL_MX','nan','nan','Negotiation',27500,'Warm','2026-06','David Granados','LAND','MX','41914831780','46061232954'],['Mapfre - Propuesta para nuevos envios Fase II','nan','nan','Demo',27260,'Warm','2026-05','Nicolas Matias Castro Macaroni','EXPAND','EC','23413377288','59225162076'],['verisure.com - Espanha','StAcc','Whales','Solution Design',27216,'Warm','2026-06','Daniel Saborío','LAND','ES','23418101562','48870217540'],['Decathlon - Col - Out','nan','Big Strugglers','Demo',22940,'Warm','2026-06','Beatriz de Puig','LAND','FR','23395804546','55493229190'],['Chubb | Evolución Outbound Tablero','MAcc','Whales','Negotiation',21083,'Hot','2026-04','Ximena López Muñoz','EXPAND','CH','23399054935','58025048243'],['Betterware - MX  - Nuevo tipo de objeto Deal','nan','nan','Demo',19848,'Cold','2025-11','William Peña','EXPAND','MX','41299150900','47098084474'],['Grupo Velas  - Cotización','SMB','Sharks','Demo',17476,'Cold','2025-11','Guillermo Alvarez','EXPAND','BR','10516682396','47172260154'],['BBVA RCS SEGUROS CONTINUIDAD DE SERVICIOS','SMB','Whales','Solution Design',15880,'Warm','2026-08','David Granados','LAND','MX','15919742530','59018100915'],['BBVA_RCS_MX - Continuidad de servicio TDC','SMB','Whales','Solution Design',15879,'Warm','2026-08','David Granados','LAND','MX','15919742530','58404188062'],['Go Bravo OUT - MX','SMB','Big Strugglers','Negotiation',14063,'Warm','2026-06','David Granados','LAND','DE','49745437031','54609945415'],['LENOVO - LATAM','SMB','Whales','Commit',13500,'Hot','2026-04','Ignacio Diego','LAND','CN','848270316','53444023379'],['Kueski - Kike Smart Deus- Sessions','MAcc','Whales','Demo',10000,'Cold','2026-08','Lianet Oliveros','EXPAND','MX','17640321093','44451578121'],['Kueski- POC COPILOT -Sessions Copilot','MAcc','Whales','Demo',10000,'Warm','2026-07','Lianet Oliveros','EXPAND','MX','17640321093','55679602325'],['Viva Aerobus - Agent AI - Variable','MAcc','Big Strugglers','Discovery',10000,'Cold','2026-05','Sari Villavicencio','EXPAND','MX','23398743449','44462161053'],['Cotización - Ford','nan','nan','Demo',9415,'Cold','2025-12','Guillermo Alvarez','EXPAND','MX','41914831780','47172878632'],['Cecotec - IC','nan','Mid Almosts','Negotiation',9225,'Warm','2026-11','Natalia Antolín San Segundo','LAND','ES','23414545208','50254060633'],['BBVA RCS SEGUROS','SMB','Whales','Solution Design',9137,'Hot','2026-05','David Granados','LAND','MX','15919742530','58986851983'],['CODERE - FAQs + Ai Agent - WA','MAcc','Mid & Poor Fit','Discovery',8940,'Cold','2026-05','Pablo Baldovinos','EXPAND','MX','18290697503','44451548444'],['Sura Afore - Cotización','SMB','Whales','Demo',8618,'Cold','2025-11','Guillermo Alvarez','EXPAND','MX','23417173896','47721217331'],['flexi.com.mxmx','nan','Big Strugglers','Commit',8600,'Warm','2026-06','Beatriz de Puig','LAND','MX','23403521932','56893308984'],['Act digital / Heineken - Mx','SMB','Whales','Commit',8205,'Hot','2026-04','David Granados','LAND','BR','5749162310','58136159583'],['Emagister - EducaEdu','nan','nan','Discovery',6480,'Warm','2026-04','Cecilia Anguiano','EXPAND','ES','23396424718','58134874267'],['optimagrupo.com - Espanha','nan','nan','Negotiation',3240,'Hot','2026-04','Daniel Saborío','LAND','ES','23396583472','52245261875'],['AgenziAssicurazioni - Itália - INB','nan','nan','Solution Design',3132,'Hot','2026-05','Giulia Grimaldi','LAND','??','53912155729','59032823847'],['Renovacion Anual - Leroy Merlin','StAcc','Whales','Commit',1296,'Hot','2026-05','Nicolas Matias Castro Macaroni','EXPAND','BR','557895273','58332181536'],['Zoetis MX (Piloto)','SMB','Sharks','Commit',656,'Hot','2026-04','Pedro Pinheiro','LAND','BR','14912734296','43739969451'],['Endeavor - Renovación Nuevo Plan','SMB','Mid & Poor Fit','Discovery',426,'Warm','2026-08','Alondra Reynoso','EXPAND','BR','87584507','58630644337']],
-  monthly:[{m:'Abr 2025',mrr:7300,c:2},{m:'Mai 2025',mrr:22860,c:7},{m:'Jun 2025',mrr:111493,c:6},{m:'Jul 2025',mrr:166502,c:12},{m:'Ago 2025',mrr:166029,c:19},{m:'Set 2025',mrr:929187,c:25},{m:'Out 2025',mrr:3210923,c:37},{m:'Nov 2025',mrr:1246749,c:30},{m:'Dez 2025',mrr:1523291,c:35},{m:'Jan 2026',mrr:1100216,c:18},{m:'Fev 2026',mrr:721615,c:34},{m:'Mar 2026',mrr:4465000,c:60},{m:'Abr 2026',mrr:13601086,c:292},{m:'Mai 2026',mrr:20229964,c:606},{m:'Jun 2026',mrr:16009640,c:307}],
-  atRisk:[{co:'Kueski',mrr:4407053,stage:'Discovery',temp:'Cold',risk:0.65,own:'Lianet Oliveros',country:'MX'},{co:'Kueski',mrr:3001511,stage:'Commit',temp:'Cold',risk:0.65,own:'Lianet Oliveros',country:'MX'},{co:'Federação das Indústrias do Estado de Santa Catarina',mrr:1085674,stage:'Commit',temp:'Cold',risk:0.65,own:'Paula Salzano',country:'BR'},{co:'Gympass',mrr:668333,stage:'Discovery',temp:'Hot',risk:0.5,own:'Fabio Nascimento',country:'BR'},{co:'Grupo Equatorial',mrr:600000,stage:'Negotiation',temp:'Cold',risk:0.65,own:'Sharon Zanandrais',country:'BR'},{co:'Grupo Equatorial',mrr:500000,stage:'Discovery',temp:'Cold',risk:0.65,own:'Sharon Zanandrais',country:'BR'},{co:'Cruzeiro do Sul Educacional',mrr:420000,stage:'Discovery',temp:'Cold',risk:0.65,own:'Unassigned',country:'BR'},{co:'Nestlé Brasil',mrr:380000,stage:'Discovery',temp:'Cold',risk:0.65,own:'Gabriela Fernandes',country:'BR'}]
+  summary:{total_deals:0,total_mrr:0,land_mrr:0,expand_mrr:0,hot_mrr:0,warm_mrr:0,cold_mrr:0},
+  funnel:[],
+  countries:[],
+  top40:[],
+  monthly:[],
+  atRisk:[]
 };
 
 // ═══ GLOBAL STATE ═══
@@ -2444,36 +2444,12 @@ const COUNTRY_NAMES = {
 // i18n
 // ═══════════════════════════════════════════
 // ═══ DATA CONSTANTS (moved before functions) ═══
-// Pre-aggregated filter slices (from DATA)
+// Pre-aggregated filter slices (from DATA) — zerado; preenchido por rebuildDataFromDeals()
 const OV_DATA = {
-  all: {
-    stages: [{s:'Discovery',mrr:205352,count:198},{s:'Demo',mrr:144227,count:86},{s:'Solution Design',mrr:201780,count:82},{s:'Negotiation',mrr:175434,count:58},{s:'Commit',mrr:57747,count:21}],
-    segs: [{s:'Whales',mrr:415258},{s:'Big Strugglers',mrr:94349},{s:'Sharks',mrr:60427},{s:'Mid Almosts',mrr:30236},{s:'Mid & Poor Fit',mrr:21705},{s:'Small & Poor Fit',mrr:4559}],
-    hot: 216709, warm: 441703, cold: 126128,
-    tableDeals: [['Kueski - Promociones - Sessions (Complementario)','MAcc','Whales','Discovery',72900,'Warm','2026-06','Lianet Oliveros','EXPAND','MX','17640321093','55827646481'],['Kueski - Promociones - Sessions','MAcc','Whales','Negotiation',49650,'Hot','2026-05','Lianet Oliveros','EXPAND','MX','17640321093','51761173552'],['Chubb - Bot agentes','MAcc','Whales','Solution Design',49472,'Hot','2026-05','Ximena López Muñoz','EXPAND','??','23399054935','58630736766'],['Kueski - Pacta - Sessions','MAcc','Whales','Solution Design',46125,'Warm','2026-07','Lianet Oliveros','EXPAND','MX','17640321093','40735787619'],['Viva Aerobus - Nuevo Variable','MAcc','Big Strugglers','Discovery',30000,'Cold','2026-02','Sari Villavicencio','EXPAND','MX','23398743449','51244932171'],['Ford_Chihuahua_ALL_MX','nan','nan','Negotiation',27500,'Warm','2026-06','David Granados','LAND','MX','41914831780','46061232954'],['Mapfre - Propuesta para nuevos envios Fase II','nan','nan','Demo',27260,'Warm','2026-05','Nicolas Matias Castro Macaroni','EXPAND','EC','23413377288','59225162076'],['verisure.com - Espanha','StAcc','Whales','Solution Design',27216,'Warm','2026-06','Daniel Saborío','LAND','ES','23418101562','48870217540']],
-    alert: '16% do pipeline Cold. Risco de perda acelerada sem intervenção.'
-  },
-  land: {
-    stages: [{s:'Discovery',mrr:18377,count:83},{s:'Demo',mrr:38400,count:47},{s:'Solution Design',mrr:99670,count:58},{s:'Negotiation',mrr:87938,count:34},{s:'Commit',mrr:49364,count:12}],
-    segs: [{s:'Whales',mrr:115848},{s:'Big Strugglers',mrr:49075},{s:'Mid Almosts',mrr:24390},{s:'Sharks',mrr:8162},{s:'Small & Poor Fit',mrr:3209},{s:'Mid & Poor Fit',mrr:2167}],
-    hot: 68704, warm: 223296, cold: 1750,
-    tableDeals: [['Ford_Chihuahua_ALL_MX','nan','nan','Negotiation',27500,'Warm','2026-06','David Granados','LAND','MX','41914831780','46061232954'],['verisure.com - Espanha','StAcc','Whales','Solution Design',27216,'Warm','2026-06','Daniel Saborío','LAND','ES','23418101562','48870217540'],['Decathlon - Col - Out','nan','Big Strugglers','Demo',22940,'Warm','2026-06','Beatriz de Puig','LAND','??','23395804546','55493229190'],['BBVA RCS SEGUROS CONTINUIDAD DE SERVICIOS','SMB','Whales','Solution Design',15880,'Warm','2026-08','David Granados','LAND','MX','15919742530','59018100915'],['BBVA_RCS_MX - Continuidad de servicio TDC','SMB','Whales','Solution Design',15879,'Warm','2026-08','David Granados','LAND','MX','15919742530','58404188062'],['Go Bravo OUT - MX','SMB','Big Strugglers','Negotiation',14063,'Warm','2026-06','David Granados','LAND','??','49745437031','54609945415'],['LENOVO - LATAM','SMB','Whales','Commit',13500,'Hot','2026-04','Ignacio Diego','LAND','??','848270316','53444023379'],['Cecotec - IC','nan','Mid Almosts','Negotiation',9225,'Warm','2026-11','Natalia Antolín San Segundo','LAND','ES','23414545208','50254060633']],
-    alert: 'LAND: $293750 em 234 deals.'
-  },
-  expand: {
-    stages: [{s:'Discovery',mrr:186975,count:115},{s:'Demo',mrr:105827,count:39},{s:'Solution Design',mrr:102110,count:24},{s:'Negotiation',mrr:87496,count:24},{s:'Commit',mrr:8384,count:9}],
-    segs: [{s:'Whales',mrr:299410},{s:'Sharks',mrr:52265},{s:'Big Strugglers',mrr:45274},{s:'Mid & Poor Fit',mrr:19538},{s:'Mid Almosts',mrr:5846},{s:'Small & Poor Fit',mrr:1350}],
-    hot: 148005, warm: 218408, cold: 124378,
-    tableDeals: [['Kueski - Promociones - Sessions (Complementario)','MAcc','Whales','Discovery',72900,'Warm','2026-06','Lianet Oliveros','EXPAND','MX','17640321093','55827646481'],['Kueski - Promociones - Sessions','MAcc','Whales','Negotiation',49650,'Hot','2026-05','Lianet Oliveros','EXPAND','MX','17640321093','51761173552'],['Chubb - Bot agentes','MAcc','Whales','Solution Design',49472,'Hot','2026-05','Ximena López Muñoz','EXPAND','??','23399054935','58630736766'],['Kueski - Pacta - Sessions','MAcc','Whales','Solution Design',46125,'Warm','2026-07','Lianet Oliveros','EXPAND','MX','17640321093','40735787619'],['Viva Aerobus - Nuevo Variable','MAcc','Big Strugglers','Discovery',30000,'Cold','2026-02','Sari Villavicencio','EXPAND','MX','23398743449','51244932171'],['Mapfre - Propuesta para nuevos envios Fase II','nan','nan','Demo',27260,'Warm','2026-05','Nicolas Matias Castro Macaroni','EXPAND','EC','23413377288','59225162076'],['Chubb | Evolución Outbound Tablero','MAcc','Whales','Negotiation',21083,'Hot','2026-04','Ximena López Muñoz','EXPAND','??','23399054935','58025048243'],['Betterware - MX  - Nuevo tipo de objeto Deal','nan','nan','Demo',19848,'Cold','2025-11','William Peña','EXPAND','MX','41299150900','47098084474']],
-    alert: 'EXPAND: $490791 em 211 deals. 25% Cold.'
-  },
-  risk: {
-    stages: [{s:'Discovery',mrr:57698,count:111},{s:'Demo',mrr:66956,count:34},{s:'Solution Design',mrr:513,count:15},{s:'Negotiation',mrr:500,count:2},{s:'Commit',mrr:462,count:4}],
-    segs: [{s:'Big Strugglers',mrr:40600},{s:'Sharks',mrr:22402},{s:'Whales',mrr:21615},{s:'Mid & Poor Fit',mrr:9499},{s:'Small & Poor Fit',mrr:1750},{s:'Mid Almosts',mrr:500}],
-    hot: 0, warm: 0, cold: 126128,
-    tableDeals: [['Viva Aerobus - Nuevo Variable','MAcc','Big Strugglers','Discovery',30000,'Cold','2026-02','Sari Villavicencio','EXPAND','MX','23398743449','51244932171'],['Betterware - MX  - Nuevo tipo de objeto Deal','nan','nan','Demo',19848,'Cold','2025-11','William Peña','EXPAND','MX','41299150900','47098084474'],['Grupo Velas  - Cotización','SMB','Sharks','Demo',17476,'Cold','2025-11','Guillermo Alvarez','EXPAND','BR','10516682396','47172260154'],['Kueski - Kike Smart Deus- Sessions','MAcc','Whales','Demo',10000,'Cold','2026-08','Lianet Oliveros','EXPAND','MX','17640321093','44451578121'],['Viva Aerobus - Agent AI - Variable','MAcc','Big Strugglers','Discovery',10000,'Cold','2026-05','Sari Villavicencio','EXPAND','MX','23398743449','44462161053'],['Cotización - Ford','nan','nan','Demo',9415,'Cold','2025-12','Guillermo Alvarez','EXPAND','MX','41914831780','47172878632'],['CODERE - FAQs + Ai Agent - WA','MAcc','Mid & Poor Fit','Discovery',8940,'Cold','2026-05','Pablo Baldovinos','EXPAND','MX','18290697503','44451548444'],['Sura Afore - Cotización','SMB','Whales','Demo',8618,'Cold','2025-11','Guillermo Alvarez','EXPAND','MX','23417173896','47721217331'],['Finlag - Renovación nuevo plan','MAcc','Sharks','Discovery',2100,'Cold','2026-03','Alondra Reynoso','EXPAND','MX','23409436754','58630519051'],['magna.commx','SMB','Small & Poor Fit','Discovery',1750,'Cold','','Beatriz de Puig','LAND','??','4575177424','55698345307'],['Mattilda - Nueva Línea Alegebrais - Sessions','SMB','Sharks','Discovery',1486,'Cold','2025-09','Lianet Oliveros','EXPAND','MX','23399067559','42920531884'],['Kueski- POC COPILOT / PS -Plataforma','MAcc','Whales','Demo',1000,'Cold','2026-07','Lianet Oliveros','EXPAND','MX','17640321093','43636274793']],
-    alert: '166 deals Cold sem engajamento. 6 em estágios avançados.'
-  }
+  all:    {stages:[],segs:[],hot:0,warm:0,cold:0,tableDeals:[],alert:''},
+  land:   {stages:[],segs:[],hot:0,warm:0,cold:0,tableDeals:[],alert:''},
+  expand: {stages:[],segs:[],hot:0,warm:0,cold:0,tableDeals:[],alert:''},
+  risk:   {stages:[],segs:[],hot:0,warm:0,cold:0,tableDeals:[],alert:''}
 };
 
 const RP = {
@@ -3693,6 +3669,48 @@ function monthLabel(ym) {
   const months = {'01':'Jan','02':'Fev','03':'Mar','04':'Abr','05':'Mai','06':'Jun','07':'Jul','08':'Ago','09':'Set','10':'Out','11':'Nov','12':'Dez'};
   if (!ym || ym.length < 7) return ym;
   return months[ym.substring(5,7)] + ' ' + ym.substring(2,4);
+}
+
+// ═══════════════════════════════════════════════════════════
+// computeQ2 — attainment Q2 vs FORECAST_CSV plan (LATAM + Europa)
+// Requires FORECAST_CSV — returns { noData: true } when not loaded.
+// Rule: CSV actual non-null → finalized; null → Preview/future → use scenario.
+// No fallback to RP or OFFICIAL_PNL here — prevents unit mismatches.
+// ═══════════════════════════════════════════════════════════
+function computeQ2(scenario) {
+  const periodInfo = (typeof getPeriodMonths === 'function') ? getPeriodMonths('Q', 'Q2') : null;
+  const noData = { actual: 0, forecast: 0, budget: 0, total: 0, noData: true };
+  if (!periodInfo) return noData;
+  if (typeof FORECAST_CSV === 'undefined' || !FORECAST_CSV) return noData;
+  let actual = 0, forecast = 0, budget = 0;
+  ['LATAM','Europa'].forEach(r => {
+    if (!FORECAST_CSV[r]) return;
+    const bd = (typeof getBudgetForRegion === 'function') ? (getBudgetForRegion(r) || []) : [];
+    periodInfo.months.forEach(m => {
+      const idx = parseInt(m.substring(5,7),10) - 1;
+      budget += bd[idx] || 0;
+      let val = null, isActual = false;
+      const actualArr = (FORECAST_CSV[r].actual || {}).net_revenue;
+      if (actualArr && actualArr[idx] !== null && actualArr[idx] !== undefined && actualArr[idx] > 0) {
+        val = actualArr[idx]; isActual = true;
+      } else {
+        const sc = scenario || 'realistic';
+        const scArr = ((FORECAST_CSV[r][sc] || FORECAST_CSV[r].realistic) || {}).net_revenue;
+        if (scArr && scArr[idx] !== null && scArr[idx] !== undefined && scArr[idx] > 0) {
+          val = scArr[idx]; isActual = false;
+        }
+      }
+      if (val !== null) { if (isActual) actual += val; else forecast += val; }
+    });
+  });
+  if (budget === 0) return noData;
+  const total = actual + forecast;
+  const ratio = total / budget;
+  if (ratio > 3.0) {
+    console.warn('[computeQ2] Ratio > 300% (' + (ratio*100).toFixed(0) + '%) for scenario=' + scenario + '. Possible unit mismatch. budget=' + budget + ', total=' + total);
+    return noData;
+  }
+  return { actual, forecast, budget, total };
 }
 
 function buildForecast() {
@@ -6153,26 +6171,14 @@ function buildWeeklyBrief() {
   
   // Q2 status
   const periodInfo = (typeof getPeriodMonths === 'function') ? getPeriodMonths('Q', 'Q2') : null;
-  let q2Actual = 0, q2Forecast = 0, q2Budget = 0;
-  const LAST_ACTUAL_MONTH = (typeof OFFICIAL_PNL_LAST_MONTH !== 'undefined') ? OFFICIAL_PNL_LAST_MONTH : '2026-04';
-  if (periodInfo) {
-    ['LATAM','Europa'].forEach(r => {
-      const bd = (typeof getBudgetForRegion === 'function') ? (getBudgetForRegion(r) || []) : [];
-      periodInfo.months.forEach(m => {
-        const idx = parseInt(m.substring(5,7),10) - 1;
-        q2Budget += bd[idx] || 0;
-        if (m <= LAST_ACTUAL_MONTH) {
-          const a = (typeof getActualForMonth === 'function') ? getActualForMonth(r, m) : null;
-          if (a !== null) q2Actual += a;
-        } else {
-          const f = (typeof getForecastForMonth === 'function') ? getForecastForMonth(r, m) : null;
-          if (f !== null) q2Forecast += f;
-        }
-      });
-    });
-  }
-  const q2Total = q2Actual + q2Forecast;
-  const q2Ratio = q2Budget > 0 ? q2Total / q2Budget : 0;
+  // Attainment Q2: usa computeQ2 global (exige FORECAST_CSV, sem hardcoded fallback)
+  const _wbReal = (typeof computeQ2 === 'function') ? computeQ2('realistic') : { noData: true };
+  const _wbOpt  = (typeof computeQ2 === 'function') ? computeQ2('optimistic') : { noData: true };
+  const _hasAttainment = !_wbReal.noData && _wbReal.budget > 0;
+  const realRatio = _hasAttainment ? _wbReal.total / _wbReal.budget : null;
+  const optRatio  = _hasAttainment ? _wbOpt.total  / _wbOpt.budget  : null;
+  const q2Total  = _hasAttainment ? _wbReal.total  : 0;
+  const q2Budget = _hasAttainment ? _wbReal.budget : 0;
   
   // Top 5 deals to focus this week (Hot deals closing soon, sorted by MRR)
   const startMonth = today;
@@ -6213,22 +6219,26 @@ function buildWeeklyBrief() {
     });
   }
   
-  // Headline based on Q2 status
+  // Headline based on Q2 attainment (realRatio from FORECAST_CSV; null = sem dados)
+  const _r = realRatio !== null ? realRatio : -1;
   const headline = _lang==='pt' ? (
-    q2Ratio >= 0.95 ? 'Q2 no trilho — disciplina para fechar' :
-    q2Ratio >= 0.70 ? 'Q2 está a meio caminho — foco em mover o pipeline' :
+    realRatio === null ? 'Carregue o database para ver o attainment de Q2' :
+    _r >= 0.95 ? 'Q2 no trilho — disciplina para fechar' :
+    _r >= 0.70 ? 'Q2 a caminho — foco em mover o pipeline' :
     'Q2 abaixo do esperado — ação urgente'
   ) : _lang==='es' ? (
-    q2Ratio >= 0.95 ? 'Q2 en track — disciplina para cerrar' :
-    q2Ratio >= 0.70 ? 'Q2 a medio camino — foco en mover el pipeline' :
+    realRatio === null ? 'Carga el database para ver el attainment de Q2' :
+    _r >= 0.95 ? 'Q2 en track — disciplina para cerrar' :
+    _r >= 0.70 ? 'Q2 en camino — foco en mover el pipeline' :
     'Q2 abajo de lo esperado — acción urgente'
   ) : (
-    q2Ratio >= 0.95 ? 'Q2 on track — discipline to close' :
-    q2Ratio >= 0.70 ? 'Q2 halfway there — focus on pipeline movement' :
+    realRatio === null ? 'Load the database to see Q2 attainment' :
+    _r >= 0.95 ? 'Q2 on track — discipline to close' :
+    _r >= 0.70 ? 'Q2 on the way — focus on pipeline movement' :
     'Q2 below plan — urgent action required'
   );
-  
-  const headlineColor = q2Ratio >= 0.95 ? '#10b981' : q2Ratio >= 0.70 ? '#f59e0b' : '#ef4444';
+
+  const headlineColor = realRatio === null ? 'var(--mu)' : _r >= 0.95 ? '#10b981' : _r >= 0.70 ? '#f59e0b' : '#ef4444';
   
   // Date for the brief (use today)
   const now = new Date();
@@ -6303,7 +6313,7 @@ function buildWeeklyBrief() {
   const kpis = [
     { label: L.kpi_pipe, value: fmt(totalMRR), sub: openDeals.length + ' deals', color: 'var(--ac)' },
     { label: L.kpi_hot, value: fmt(hotMRR), sub: hotDeals.length + ' deals · ' + (totalMRR>0?(hotMRR/totalMRR*100).toFixed(0):'0') + '%', color: '#10b981' },
-    { label: L.kpi_q2, value: (q2Ratio*100).toFixed(0) + '%', sub: fmt(q2Total) + ' / ' + fmt(q2Budget), color: headlineColor },
+    { label: L.kpi_q2, value: _hasAttainment ? (realRatio*100).toFixed(0) + '% – ' + (optRatio*100).toFixed(0) + '%' : '–', sub: _hasAttainment ? fmt(q2Total) + ' / ' + fmt(q2Budget) : (_lang==='pt' ? 'carregue o database' : _lang==='es' ? 'carga el database' : 'load database'), color: headlineColor },
     { label: L.kpi_overdue, value: overdue.length.toString(), sub: fmt(overdueMRR), color: overdue.length > 10 ? '#ef4444' : '#fca5a5' }
   ];
   kpis.forEach(k => {
@@ -6383,53 +6393,12 @@ function buildExecutiveSummary() {
   // YTD signal (Jan → last actual)
   const ytdInfo = (typeof getPeriodMonths === 'function') ? getPeriodMonths('YTD', 'YTD') : null;
   
-  // Compute realistic vs optimistic Q2 totals
-  // Rule: for each month, FORECAST_CSV is the single source of truth when loaded.
-  //   - CSV actual[month] non-null  → finalized actual
-  //   - CSV actual[month] null       → Preview or future: use scenario value
-  // If no FORECAST_CSV for the region → fall back to OFFICIAL_PNL / computeRevenueBreakdown.
-  function computeQ2(scenario) {
-    let actual = 0, forecast = 0, budget = 0;
-    if (!periodInfo) return { actual: 0, forecast: 0, budget: 0, total: 0 };
-    ['LATAM','Europa'].forEach(r => {
-      const bd = (typeof getBudgetForRegion === 'function') ? (getBudgetForRegion(r) || []) : [];
-      periodInfo.months.forEach(m => {
-        const idx = parseInt(m.substring(5,7),10) - 1;
-        budget += bd[idx] || 0;
-        let val = null, isActual = false;
-        if (typeof FORECAST_CSV !== 'undefined' && FORECAST_CSV && FORECAST_CSV[r]) {
-          // Try finalized actual from CSV
-          const actualArr = (FORECAST_CSV[r].actual || {}).net_revenue;
-          if (actualArr && actualArr[idx] !== null && actualArr[idx] !== undefined && actualArr[idx] > 0) {
-            val = actualArr[idx]; isActual = true;
-          } else {
-            // Preview or future month — use scenario
-            const scArr = ((FORECAST_CSV[r][scenario] || FORECAST_CSV[r].realistic) || {}).net_revenue;
-            if (scArr && scArr[idx] !== null && scArr[idx] !== undefined && scArr[idx] > 0) {
-              val = scArr[idx]; isActual = false;
-            }
-          }
-        }
-        // Fallback: no FORECAST_CSV for this region
-        if (val === null) {
-          if (m <= LAST_ACTUAL_MONTH) {
-            const a = (typeof getActualForMonth === 'function') ? getActualForMonth(r, m) : null;
-            if (a !== null) { val = a; isActual = true; }
-          } else {
-            const f = (typeof getForecastForMonth === 'function') ? getForecastForMonth(r, m, scenario) : null;
-            if (f !== null) { val = f; isActual = false; }
-          }
-        }
-        if (val !== null) { if (isActual) actual += val; else forecast += val; }
-      });
-    });
-    return { actual, forecast, budget, total: actual + forecast };
-  }
-  
-  const realistic = computeQ2('realistic');
-  const optimistic = computeQ2('optimistic');
-  const realRatio = realistic.budget > 0 ? realistic.total / realistic.budget : 0;
-  const optRatio = optimistic.budget > 0 ? optimistic.total / optimistic.budget : 0;
+  // Compute realistic vs optimistic Q2 totals via global computeQ2
+  // (exige FORECAST_CSV — sem fallback para RP ou OFFICIAL_PNL; retorna noData se não carregado)
+  const realistic = (typeof computeQ2 === 'function') ? computeQ2('realistic')  : { noData: true, actual: 0, forecast: 0, budget: 0, total: 0 };
+  const optimistic = (typeof computeQ2 === 'function') ? computeQ2('optimistic') : { noData: true, actual: 0, forecast: 0, budget: 0, total: 0 };
+  const realRatio = (!realistic.noData && realistic.budget > 0) ? realistic.total / realistic.budget : null;
+  const optRatio  = (!optimistic.noData && optimistic.budget > 0) ? optimistic.total / optimistic.budget : null;
   
   // YTD actual (just numbers up to last_actual)
   let ytdActual = 0;
@@ -6456,18 +6425,18 @@ function buildExecutiveSummary() {
   const today = new Date().toISOString().substring(0,7);
   const overdue = openDeals.filter(d => (d.closed_at || '').substring(0,7) < today && d.closed_at);
   
-  // Regional spread for the realistic scenario
+  // Regional spread (only when FORECAST_CSV is loaded — sem fallback para RP)
   let bestR = null, worstR = null;
   let bestRatio = 0, worstRatio = 99;
-  ['LATAM','Europa'].forEach(r => {
-    if (!periodInfo) return;
-    let regTotal = 0, b = 0;
-    const bd = (typeof getBudgetForRegion === 'function') ? (getBudgetForRegion(r) || []) : [];
-    periodInfo.months.forEach(m => {
-      const idx = parseInt(m.substring(5,7),10) - 1;
-      b += bd[idx] || 0;
-      let val = null;
-      if (typeof FORECAST_CSV !== 'undefined' && FORECAST_CSV && FORECAST_CSV[r]) {
+  if (periodInfo && typeof FORECAST_CSV !== 'undefined' && FORECAST_CSV) {
+    ['LATAM','Europa'].forEach(r => {
+      if (!FORECAST_CSV[r]) return;
+      let regTotal = 0, b = 0;
+      const bd = (typeof getBudgetForRegion === 'function') ? (getBudgetForRegion(r) || []) : [];
+      periodInfo.months.forEach(m => {
+        const idx = parseInt(m.substring(5,7),10) - 1;
+        b += bd[idx] || 0;
+        let val = null;
         const actualArr = (FORECAST_CSV[r].actual || {}).net_revenue;
         if (actualArr && actualArr[idx] !== null && actualArr[idx] !== undefined && actualArr[idx] > 0) {
           val = actualArr[idx];
@@ -6475,24 +6444,15 @@ function buildExecutiveSummary() {
           const scArr = (FORECAST_CSV[r].realistic || {}).net_revenue;
           if (scArr && scArr[idx] !== null && scArr[idx] !== undefined && scArr[idx] > 0) val = scArr[idx];
         }
+        if (val !== null) regTotal += val;
+      });
+      if (b > 0) {
+        const ratio = regTotal / b;
+        if (ratio > bestRatio) { bestRatio = ratio; bestR = r; }
+        if (ratio < worstRatio) { worstRatio = ratio; worstR = r; }
       }
-      if (val === null) {
-        if (m <= LAST_ACTUAL_MONTH) {
-          const av = (typeof getActualForMonth === 'function') ? getActualForMonth(r, m) : null;
-          if (av !== null) val = av;
-        } else {
-          const fv = (typeof getForecastForMonth === 'function') ? getForecastForMonth(r, m, 'realistic') : null;
-          if (fv !== null) val = fv;
-        }
-      }
-      if (val !== null) regTotal += val;
     });
-    if (b > 0) {
-      const ratio = regTotal / b;
-      if (ratio > bestRatio) { bestRatio = ratio; bestR = r; }
-      if (ratio < worstRatio) { worstRatio = ratio; worstR = r; }
-    }
-  });
+  }
   
   // === Compose narratives ===
   const STR = {
@@ -6504,11 +6464,11 @@ function buildExecutiveSummary() {
       q_good:  'O que está indo bem',
       q_attn:  'Atenção',
       ytd_label: 'Realizado YTD',
-      range_label: (rR, oR) => 'Range Q2: ' + (rR*100).toFixed(0) + '% → ' + (oR*100).toFixed(0) + '% do budget',
-      where_text: (ytd, real, opt) => 'Realizado YTD de ' + fmt(ytd) + '. Q2 projeta entre ' + fmt(real) + ' (conservador) e ' + fmt(opt) + ' (otimista).',
-      going_above: 'No otimista, fechamos acima do plano. Se mantermos cadência de Hot, há upside real.',
-      going_ontrack: 'Realistic alinhado ao plano. Otimista mostra que há espaço para superar se executarmos os Warm.',
-      going_below: 'Conservador abaixo do plano. Otimista cobre boa parte do gap se conseguirmos converter Warm/Cold.',
+      range_label: (rR, oR) => rR === null ? 'Carregue o database para ver attainment' : 'Forecast Q2: ' + (rR*100).toFixed(0) + '% (realista) → ' + (oR*100).toFixed(0) + '% (otimista) vs budget',
+      where_text: (ytd, real, opt) => real === null ? 'YTD realizado de ' + fmt(ytd) + '. Carregue o database para ver a projeção de Q2.' : 'YTD realizado de ' + fmt(ytd) + '. Q2 projeta entre ' + fmt(real) + ' (realista) e ' + fmt(opt) + ' (otimista) — respectivamente ' + (realistic.total/realistic.budget*100).toFixed(0) + '% e ' + (optimistic.total/optimistic.budget*100).toFixed(0) + '% do budget.',
+      going_above: 'Cenário otimista já supera o plano em ' + (optRatio !== null ? ((optRatio-1)*100).toFixed(0) + '%' : '--') + '. Se mantivermos cadência com Hot deals, há upside real para Q2.',
+      going_ontrack: 'Realista em ' + (realRatio !== null ? (realRatio*100).toFixed(0)+'%' : '--') + ' do budget — alinhado ao plano. Otimista mostra espaço de crescimento se executarmos os Warm deals.',
+      going_below: 'Realista abaixo do plano (' + (realRatio !== null ? (realRatio*100).toFixed(0)+'%' : '--') + '%). Otimista (' + (optRatio !== null ? (optRatio*100).toFixed(0)+'%' : '--') + '%) cobre boa parte do gap se convertermos Warm/Cold.',
       good: [],
       attn: []
     },
@@ -6520,8 +6480,8 @@ function buildExecutiveSummary() {
       q_good:  'Lo que va bien',
       q_attn:  'Atención',
       ytd_label: 'Realizado YTD',
-      range_label: (rR, oR) => 'Rango Q2: ' + (rR*100).toFixed(0) + '% → ' + (oR*100).toFixed(0) + '% del budget',
-      where_text: (ytd, real, opt) => 'Realizado YTD de ' + fmt(ytd) + '. Q2 proyecta entre ' + fmt(real) + ' (conservador) y ' + fmt(opt) + ' (optimista).',
+      range_label: (rR, oR) => rR === null ? 'Carga el database para ver el attainment' : 'Forecast Q2: ' + (rR*100).toFixed(0) + '% (realista) → ' + (oR*100).toFixed(0) + '% (optimista) vs budget',
+      where_text: (ytd, real, opt) => real === null ? 'YTD realizado de ' + fmt(ytd) + '. Carga el database para ver la proyección de Q2.' : 'YTD realizado de ' + fmt(ytd) + '. Q2 proyecta entre ' + fmt(real) + ' (realista) y ' + fmt(opt) + ' (optimista) — ' + (realistic.total/realistic.budget*100).toFixed(0) + '% y ' + (optimistic.total/optimistic.budget*100).toFixed(0) + '% del budget respectivamente.',
       going_above: 'En el optimista, cerramos arriba del plan. Si mantenemos la cadencia de Hot, hay upside real.',
       going_ontrack: 'Realistic alineado al plan. Optimista muestra que hay espacio para superar si ejecutamos los Warm.',
       going_below: 'Conservador abajo del plan. Optimista cubre buena parte del gap si convertimos Warm/Cold.',
@@ -6536,11 +6496,11 @@ function buildExecutiveSummary() {
       q_good:  'What is working',
       q_attn:  'Attention',
       ytd_label: 'YTD actual',
-      range_label: (rR, oR) => 'Q2 range: ' + (rR*100).toFixed(0) + '% → ' + (oR*100).toFixed(0) + '% of budget',
-      where_text: (ytd, real, opt) => 'YTD actual of ' + fmt(ytd) + '. Q2 projects between ' + fmt(real) + ' (conservative) and ' + fmt(opt) + ' (optimistic).',
-      going_above: 'In the optimistic case, we close above plan. If we maintain Hot cadence, there is real upside.',
-      going_ontrack: 'Realistic aligned with plan. Optimistic shows room to overshoot if we execute Warm deals.',
-      going_below: 'Conservative below plan. Optimistic covers much of the gap if we convert Warm/Cold.',
+      range_label: (rR, oR) => rR === null ? 'Load database to see Q2 attainment' : 'Q2 forecast: ' + (rR*100).toFixed(0) + '% (realistic) → ' + (oR*100).toFixed(0) + '% (optimistic) vs budget',
+      where_text: (ytd, real, opt) => real === null ? 'YTD actual of ' + fmt(ytd) + '. Load database to see Q2 projection.' : 'YTD actual of ' + fmt(ytd) + '. Q2 projects between ' + fmt(real) + ' (realistic) and ' + fmt(opt) + ' (optimistic) — ' + (realistic.total/realistic.budget*100).toFixed(0) + '% and ' + (optimistic.total/optimistic.budget*100).toFixed(0) + '% of budget respectively.',
+      going_above: 'Optimistic already exceeds plan by ' + (optRatio !== null ? ((optRatio-1)*100).toFixed(0) + '%' : '--') + '. Maintain Hot deal cadence — there is real upside for Q2.',
+      going_ontrack: 'Realistic at ' + (realRatio !== null ? (realRatio*100).toFixed(0)+'%' : '--') + ' of budget — on track with plan. Optimistic shows room to overshoot if we execute Warm deals.',
+      going_below: 'Realistic below plan (' + (realRatio !== null ? (realRatio*100).toFixed(0)+'%' : '--') + '%). Optimistic (' + (optRatio !== null ? (optRatio*100).toFixed(0)+'%' : '--') + '%) covers much of the gap if we convert Warm/Cold.',
       good: [],
       attn: []
     }
@@ -6549,62 +6509,65 @@ function buildExecutiveSummary() {
   
   // === Identify Goods (tailwinds) ===
   const goods = [];
-  if (realRatio >= 0.90) {
-    goods.push(_lang==='pt' ? '✅ Q2 trackeando ' + (realRatio*100).toFixed(0) + '% do budget — próximo do plano.' : _lang==='es' ? '✅ Q2 trackeando ' + (realRatio*100).toFixed(0) + '% del budget — cerca del plan.' : '✅ Q2 tracking ' + (realRatio*100).toFixed(0) + '% of budget — close to plan.');
+  if (realRatio !== null && realRatio >= 0.90) {
+    goods.push(_lang==='pt' ? '✅ Realista em ' + (realRatio*100).toFixed(0) + '% do budget — Q2 próximo do plano.' : _lang==='es' ? '✅ Realista en ' + (realRatio*100).toFixed(0) + '% del budget — Q2 cerca del plan.' : '✅ Realistic at ' + (realRatio*100).toFixed(0) + '% of budget — Q2 close to plan.');
   }
-  if (optRatio > 1.05) {
-    goods.push(_lang==='pt' ? '🚀 Otimista mostra ' + (optRatio*100).toFixed(0) + '% — ' + ((optRatio-1)*100).toFixed(0) + '% acima do plano se executarmos bem.' : _lang==='es' ? '🚀 Optimista muestra ' + (optRatio*100).toFixed(0) + '% — ' + ((optRatio-1)*100).toFixed(0) + '% arriba del plan si ejecutamos bien.' : '🚀 Optimistic shows ' + (optRatio*100).toFixed(0) + '% — ' + ((optRatio-1)*100).toFixed(0) + '% above plan if we execute well.');
+  if (optRatio !== null && optRatio > 1.0) {
+    goods.push(_lang==='pt' ? '🚀 Otimista em ' + (optRatio*100).toFixed(0) + '% — ' + ((optRatio-1)*100).toFixed(0) + '% acima do plano. Upside real se executarmos Warm/Hot.' : _lang==='es' ? '🚀 Optimista en ' + (optRatio*100).toFixed(0) + '% — ' + ((optRatio-1)*100).toFixed(0) + '% arriba del plan. Upside real si ejecutamos Warm/Hot.' : '🚀 Optimistic at ' + (optRatio*100).toFixed(0) + '% — ' + ((optRatio-1)*100).toFixed(0) + '% above plan. Real upside if we execute Warm/Hot deals.');
   }
   if (bestR && bestRatio >= 1.0) {
-    goods.push(_lang==='pt' ? '🌎 ' + bestR + ' lidera com ' + (bestRatio*100).toFixed(0) + '% — região puxando o resultado.' : _lang==='es' ? '🌎 ' + bestR + ' lidera con ' + (bestRatio*100).toFixed(0) + '% — región empujando el resultado.' : '🌎 ' + bestR + ' leads with ' + (bestRatio*100).toFixed(0) + '% — region driving results.');
+    goods.push(_lang==='pt' ? '🌎 ' + bestR + ' lidera com ' + (bestRatio*100).toFixed(0) + '% do budget — região puxando o Q2.' : _lang==='es' ? '🌎 ' + bestR + ' lidera con ' + (bestRatio*100).toFixed(0) + '% — región empujando el Q2.' : '🌎 ' + bestR + ' leads at ' + (bestRatio*100).toFixed(0) + '% — region driving Q2 results.');
   }
   if (hotPct > 0.30) {
-    goods.push(_lang==='pt' ? '🔥 Pipeline com ' + (hotPct*100).toFixed(0) + '% Hot — boa concentração de deals quentes.' : _lang==='es' ? '🔥 Pipeline con ' + (hotPct*100).toFixed(0) + '% Hot — buena concentración de deals calientes.' : '🔥 Pipeline at ' + (hotPct*100).toFixed(0) + '% Hot — strong concentration of hot deals.');
+    goods.push(_lang==='pt' ? '🔥 ' + (hotPct*100).toFixed(0) + '% do pipeline é Hot (' + fmt(hot) + ') — principal vetor de conversão nas próximas semanas.' : _lang==='es' ? '🔥 ' + (hotPct*100).toFixed(0) + '% del pipeline es Hot (' + fmt(hot) + ') — principal vector de conversión.' : '🔥 ' + (hotPct*100).toFixed(0) + '% of pipeline is Hot (' + fmt(hot) + ') — primary conversion lever for the coming weeks.');
   }
   if (expand > land * 0.20 && expand > 0) {
     const expandPct = (expand / totalPipe * 100).toFixed(0);
-    goods.push(_lang==='pt' ? '🌱 Expand representa ' + expandPct + '% do pipeline — base instalada gerando crescimento.' : _lang==='es' ? '🌱 Expand representa ' + expandPct + '% del pipeline — base instalada generando crecimiento.' : '🌱 Expand is ' + expandPct + '% of pipeline — installed base driving growth.');
+    goods.push(_lang==='pt' ? '🌱 Expand representa ' + expandPct + '% do pipeline — base instalada gerando crescimento orgânico.' : _lang==='es' ? '🌱 Expand representa ' + expandPct + '% del pipeline — base instalada generando crecimiento orgánico.' : '🌱 Expand is ' + expandPct + '% of pipeline — installed base driving organic growth.');
   }
   if (goods.length === 0) {
-    goods.push(_lang==='pt' ? 'Sem tailwinds claros no momento — foco em ações de aceleração.' : _lang==='es' ? 'Sin tailwinds claros — foco en acciones de aceleración.' : 'No clear tailwinds — focus on acceleration plays.');
+    goods.push(_lang==='pt' ? 'Sem tailwinds claros no momento — foco em ações de aceleração no pipeline.' : _lang==='es' ? 'Sin tailwinds claros — foco en acciones de aceleración en el pipeline.' : 'No clear tailwinds — focus on pipeline acceleration plays.');
   }
-  
+
   // === Identify Attentions (headwinds) ===
   const attn = [];
-  if (realRatio < 0.85) {
+  if (realRatio !== null && realRatio < 0.85) {
     const gap = realistic.budget - realistic.total;
-    attn.push(_lang==='pt' ? '⚠️ Gap de ' + fmt(gap) + ' no cenário realistic — ' + ((1-realRatio)*100).toFixed(0) + '% abaixo do plano.' : _lang==='es' ? '⚠️ Gap de ' + fmt(gap) + ' en el realistic — ' + ((1-realRatio)*100).toFixed(0) + '% abajo del plan.' : '⚠️ Gap of ' + fmt(gap) + ' in realistic — ' + ((1-realRatio)*100).toFixed(0) + '% below plan.');
+    attn.push(_lang==='pt' ? '⚠️ Gap de ' + fmt(gap) + ' no realista — ' + ((1-realRatio)*100).toFixed(0) + '% abaixo do budget. Foco em Warm deals e aceleração de ciclo.' : _lang==='es' ? '⚠️ Gap de ' + fmt(gap) + ' en el realista — ' + ((1-realRatio)*100).toFixed(0) + '% abajo del budget. Foco en Warm deals.' : '⚠️ Gap of ' + fmt(gap) + ' in realistic — ' + ((1-realRatio)*100).toFixed(0) + '% below budget. Focus on Warm deals and cycle acceleration.');
   }
   if (coldPct > 0.45) {
-    attn.push(_lang==='pt' ? '🧊 ' + (coldPct*100).toFixed(0) + '% do pipeline é Cold — risco de virar Lost se não reativado.' : _lang==='es' ? '🧊 ' + (coldPct*100).toFixed(0) + '% del pipeline es Cold — riesgo de Lost si no se reactiva.' : '🧊 ' + (coldPct*100).toFixed(0) + '% of pipeline is Cold — risk of going Lost if not re-engaged.');
+    attn.push(_lang==='pt' ? '🧊 ' + (coldPct*100).toFixed(0) + '% do pipeline é Cold (' + fmt(cold) + ') — risco de virar Lost se não reativado esta semana.' : _lang==='es' ? '🧊 ' + (coldPct*100).toFixed(0) + '% del pipeline es Cold (' + fmt(cold) + ') — riesgo de Lost si no se reactiva.' : '🧊 ' + (coldPct*100).toFixed(0) + '% of pipeline is Cold (' + fmt(cold) + ') — risk of going Lost without re-engagement.');
   }
   if (overdue.length > 5) {
-    attn.push(_lang==='pt' ? '⏰ ' + overdue.length + ' deals atrasados — ciclo de venda esticando.' : _lang==='es' ? '⏰ ' + overdue.length + ' deals atrasados — ciclo de venta estirándose.' : '⏰ ' + overdue.length + ' overdue deals — sales cycle stretching.');
+    attn.push(_lang==='pt' ? '⏰ ' + overdue.length + ' deals atrasados — ciclo de venda esticando. Reagendar ou dar baixa.' : _lang==='es' ? '⏰ ' + overdue.length + ' deals atrasados — ciclo de venta estirándose. Reagendar o marcar como perdidos.' : '⏰ ' + overdue.length + ' overdue deals — sales cycle stretching. Reschedule or mark as lost.');
   }
-  if (worstR && bestRatio - worstRatio > 0.20) {
-    attn.push(_lang==='pt' ? '🌍 ' + worstR + ' atrasado em ' + (worstRatio*100).toFixed(0) + '% — performance regional desigual.' : _lang==='es' ? '🌍 ' + worstR + ' rezagado en ' + (worstRatio*100).toFixed(0) + '% — performance regional desigual.' : '🌍 ' + worstR + ' lagging at ' + (worstRatio*100).toFixed(0) + '% — uneven regional performance.');
+  if (worstR && realRatio !== null && bestRatio - worstRatio > 0.20) {
+    attn.push(_lang==='pt' ? '🌍 ' + worstR + ' em ' + (worstRatio*100).toFixed(0) + '% vs ' + bestR + ' em ' + (bestRatio*100).toFixed(0) + '% — spread regional alto. Checar causa-raiz.' : _lang==='es' ? '🌍 ' + worstR + ' en ' + (worstRatio*100).toFixed(0) + '% vs ' + bestR + ' en ' + (bestRatio*100).toFixed(0) + '% — spread regional alto.' : '🌍 ' + worstR + ' at ' + (worstRatio*100).toFixed(0) + '% vs ' + bestR + ' at ' + (bestRatio*100).toFixed(0) + '% — high regional spread. Investigate root cause.');
   }
   if (attn.length === 0) {
-    attn.push(_lang==='pt' ? 'Sem alertas críticos no momento. Manter cadência.' : _lang==='es' ? 'Sin alertas críticas. Mantener cadencia.' : 'No critical alerts. Maintain cadence.');
+    attn.push(_lang==='pt' ? 'Sem alertas críticos no momento. Manter cadência e execução.' : _lang==='es' ? 'Sin alertas críticas. Mantener cadencia y ejecución.' : 'No critical alerts. Maintain cadence and execution.');
   }
-  
+
   // === Forward statement ===
   let goingText;
-  if (optRatio > 1.0 && realRatio < 0.95) {
+  if (realRatio === null) {
+    goingText = _lang==='pt' ? 'Carregue o database para ver a projeção de fechamento de Q2.' : _lang==='es' ? 'Carga el database para ver la proyección de cierre de Q2.' : 'Load the database to see Q2 closing projection.';
+  } else if (optRatio > 1.0 && realRatio < 0.95) {
     goingText = L.going_below;
   } else if (optRatio > 1.05) {
     goingText = L.going_above;
   } else {
     goingText = L.going_ontrack;
   }
-  
-  // === Headline status (subtle, top-right) ===
-  const headColor = realRatio >= 1.0 ? '#10b981' : realRatio >= 0.85 ? '#84cc16' : realRatio >= 0.6 ? '#f59e0b' : '#ef4444';
-  const headEmoji = realRatio >= 1.0 ? '🎯' : realRatio >= 0.85 ? '⚡' : realRatio >= 0.6 ? '⚠️' : '🔻';
-  
-  // === Render ===
-  if (realistic.budget === 0 && totalPipe === 0) {
-    card.innerHTML = '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px">🤖</div><div style="color:var(--mu);font-size:12.5px;font-family:var(--fm)">' + (_lang==='pt' ? 'Aguardando dados — carregue os CSVs.' : _lang==='es' ? 'Esperando datos — carga los CSVs.' : 'Waiting for data — load the CSVs.') + '</div></div>';
+
+  // === Headline status (top-right) ===
+  const headColor = realRatio === null ? 'var(--mu)' : realRatio >= 1.0 ? '#10b981' : realRatio >= 0.85 ? '#84cc16' : realRatio >= 0.6 ? '#f59e0b' : '#ef4444';
+  const headEmoji = realRatio === null ? '🤖' : realRatio >= 1.0 ? '🎯' : realRatio >= 0.85 ? '⚡' : realRatio >= 0.6 ? '⚠️' : '🔻';
+  const headDisplay = realRatio === null ? '– %' : (realRatio*100).toFixed(0) + '% – ' + (optRatio*100).toFixed(0) + '%';
+
+  // === Render — empty state when no DB loaded and no pipeline ===
+  if (realistic.noData && totalPipe === 0) {
+    card.innerHTML = '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px">🤖</div><div style="color:var(--mu);font-size:12.5px;font-family:var(--fm)">' + (_lang==='pt' ? 'Aguardando dados — carregue o database.' : _lang==='es' ? 'Esperando datos — carga el database.' : 'Waiting for data — load the database.') + '</div></div>';
     return;
   }
   
@@ -6620,7 +6583,7 @@ function buildExecutiveSummary() {
         '<div style="font-size:10.5px;color:var(--mu);font-family:var(--fm)">' + L.range_label(realRatio, optRatio) + '</div>' +
       '</div>' +
       '<div style="font-family:var(--fd);font-weight:800;font-size:22px;color:' + headColor + ';letter-spacing:-.02em">' +
-        headEmoji + ' ' + (realRatio*100).toFixed(0) + '% – ' + (optRatio*100).toFixed(0) + '%' +
+        headEmoji + ' ' + headDisplay +
       '</div>' +
     '</div>' +
     // 4-quadrant grid
@@ -6628,7 +6591,7 @@ function buildExecutiveSummary() {
       // Quadrant 1: ONDE ESTAMOS
       '<div style="padding:14px;background:rgba(25,104,240,.04);border:1px solid rgba(25,104,240,.18);border-radius:8px">' +
         '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span style="font-size:14px">📊</span><span style="font-size:10px;color:var(--ac);font-family:var(--fm);text-transform:uppercase;letter-spacing:.08em;font-weight:600">' + L.q_where + '</span></div>' +
-        '<div style="font-size:12.5px;color:var(--tx);line-height:1.55">' + L.where_text(ytdActual, realistic.total, optimistic.total) + '</div>' +
+        '<div style="font-size:12.5px;color:var(--tx);line-height:1.55">' + L.where_text(ytdActual, realRatio !== null ? realistic.total : null, realRatio !== null ? optimistic.total : null) + '</div>' +
       '</div>' +
       // Quadrant 2: PARA ONDE VAMOS
       '<div style="padding:14px;background:rgba(124,58,237,.04);border:1px solid rgba(124,58,237,.18);border-radius:8px">' +
